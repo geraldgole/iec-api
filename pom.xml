@@ -46,7 +46,6 @@
 			<scope>test</scope>
 		</dependency>
 
-
 		<!--
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
@@ -61,6 +60,28 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.14.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<schemaDirectory>src/main/resources/schemas</schemaDirectory>
+					<schemaIncludes>
+						<include>*.xsd</include>
+					</schemaIncludes>
+					<bindingDirectory>src/main/resources/schemas</bindingDirectory>
+					<bindingIncludes>
+						<include>bindings.xjb</include>
+					</bindingIncludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
