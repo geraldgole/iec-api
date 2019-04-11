@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:a="http://langdale.com.au/2005/Message#" xmlns:sawsdl="http://www.w3.org/ns/sawsdl" targetNamespace="http://iec.ch/TC57/2009/CustomerAgreement#" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns="http://langdale.com.au/2005/Message#" xmlns:m="http://iec.ch/TC57/2009/CustomerAgreement#">
+    <xs:element name="CustomerAgreements" type="m:CustomerAgreements" />
+    <xs:complexType name="CustomerAgreements">
+        <xs:sequence>
+            <xs:element name="CustomerAgreement" type="m:CustomerAgreement" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CustomerAgreement" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAgreement">
+        <xs:sequence>
+            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.mRID" />
+            <xs:element name="aliasName" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.aliasName" />
+            <xs:element name="category" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.category" />
+            <xs:element name="description" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.description" />
+            <xs:element name="lastModifiedDateTime" minOccurs="1" maxOccurs="1" type="xs:dateTime" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.lastModifiedDateTime" />
+            <xs:element name="createdDateTime" minOccurs="1" maxOccurs="1" type="xs:dateTime" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.createdDateTime" />
+            <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.name" />
+            <xs:element name="signDate" minOccurs="0" maxOccurs="1" type="m:AbsoluteDate" sawsdl:modelReference="http://iec.ch/TC57/2009#Agreement.signDate" />
+            <xs:element name="title" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.title" />
+            <xs:element name="revisionNumber" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.revisionNumber" />
+            <xs:element name="subject" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.subject" />
+            <xs:element name="type" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.type" />
+
+            <xs:element name="Customer" type="m:Customer" minOccurs="1" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAgreement.Customer" />
+
+            <xs:element name="CustomerAccount" type="m:CustomerAccount" minOccurs="1" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAgreement.CustomerAccount" />
+
+            <xs:element name="docStatus" type="m:status" minOccurs="1" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.docStatus" />
+
+            <xs:element name="ServiceSupplier" type="m:ServiceSupplier" minOccurs="1" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAgreement.ServiceSupplier" />
+
+            <xs:element name="status" type="m:status" minOccurs="1" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.status" />
+
+            <xs:element name="validityInterval" type="m:validityInterval" minOccurs="1" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#Agreement.validityInterval" />
+
+            <xs:element name="ServiceCategory" type="m:ServiceCategory" minOccurs="0" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAgreement.ServiceCategory" />
+
+            <xs:element name="UsagePoints" type="m:UsagePoints" minOccurs="0" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAgreement.UsagePoints" />
+
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UsagePoints" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAgreement.UsagePoints">
+        <xs:sequence>
+            <xs:element name="UsagePoint" type="m:UsagePoint" minOccurs="0" maxOccurs="unbounded" sawsdl:modelReference="http://iec.ch/TC57/2009#UsagePoint" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UsagePoint">
+        <xs:sequence>
+            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.mRID" />
+            <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.name" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="kind" sawsdl:modelReference="http://iec.ch/TC57/CIM-generic#ReadingKind">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="current" />
+            <xs:enumeration value="currentAngle" />
+            <xs:enumeration value="date" />
+            <xs:enumeration value="demand" />
+            <xs:enumeration value="energy" />
+            <xs:enumeration value="other" />
+            <xs:enumeration value="phaseAngle" />
+            <xs:enumeration value="power" />
+            <xs:enumeration value="powerFactor" />
+            <xs:enumeration value="pressure" />
+            <xs:enumeration value="time" />
+            <xs:enumeration value="voltage" />
+            <xs:enumeration value="voltageAngle" />
+            <xs:enumeration value="volume" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="ServiceCategory" sawsdl:modelReference="http://iec.ch/TC57/2009#ServiceCategory">
+        <xs:sequence>
+            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.mRID" />
+            <xs:element name="aliasName" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.aliasName" />
+            <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.name" />
+            <xs:element name="kind" minOccurs="0" maxOccurs="1" type="m:kind" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="validityInterval" sawsdl:modelReference="http://iec.ch/TC57/2009#DateTimeInterval">
+        <xs:sequence>
+            <xs:element name="end" minOccurs="0" maxOccurs="1" type="xs:dateTime" sawsdl:modelReference="http://iec.ch/TC57/2009#DateTimeInterval.end" />
+            <xs:element name="start" minOccurs="1" maxOccurs="1" type="xs:dateTime" sawsdl:modelReference="http://iec.ch/TC57/2009#DateTimeInterval.start" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="status" sawsdl:modelReference="http://iec.ch/TC57/2009#Status">
+        <xs:sequence>
+            <xs:element name="dateTime" minOccurs="1" maxOccurs="1" type="xs:dateTime" sawsdl:modelReference="http://iec.ch/TC57/2009#Status.dateTime" />
+            <xs:element name="reason" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Status.reason" />
+            <xs:element name="remark" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Status.remark" />
+            <xs:element name="value" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#Status.value" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ServiceSupplier" sawsdl:modelReference="http://iec.ch/TC57/2009#ServiceSupplier">
+        <xs:sequence>
+            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.mRID" />
+            <xs:element name="aliasName" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.aliasName" />
+            <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.name" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CustomerAccount" sawsdl:modelReference="http://iec.ch/TC57/2009#CustomerAccount">
+        <xs:sequence>
+            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.mRID" />
+            <xs:element name="aliasName" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.aliasName" />
+            <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.name" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Customer" sawsdl:modelReference="http://iec.ch/TC57/2009#Customer">
+        <xs:sequence>
+            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.mRID" />
+            <xs:element name="aliasName" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.aliasName" />
+            <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" sawsdl:modelReference="http://iec.ch/TC57/2009#IdentifiedObject.name" />
+            <xs:element name="status" type="m:status" minOccurs="0" maxOccurs="1" sawsdl:modelReference="http://iec.ch/TC57/2009#Document.docStatus" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="AbsoluteDate" sawsdl:modelReference="http://iec.ch/TC57/2009#AbsoluteDate">
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+</xs:schema>

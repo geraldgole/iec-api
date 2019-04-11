@@ -1,0 +1,21 @@
+application:
+  api:
+    uri: https://avisto.gcn-eibp.com/api
+    key: 3a403b7b-ffaa-4da8-89fa-c7f59bd62e8a
+
+logging:
+  level:
+    root: INFO
+    org.apache.http: DEBUG
+
+---
+
+spring:
+  profiles: dev
+
+
+---
+
+spring:
+  profiles: prod
+
