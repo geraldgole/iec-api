@@ -19,12 +19,7 @@
 	</properties>
 
 	<dependencies>
-		<!--
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-batch</artifactId>
-		</dependency>
-		-->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -46,13 +41,31 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-batch</artifactId>
+		</dependency>
+
+		<!-- Database used by spring batch for error handling and monitoring,
+		needs to be changed for production a mysql or something else for production-->
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-oxm -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>5.1.6.RELEASE</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		-->
 	</dependencies>
 
 	<build>
