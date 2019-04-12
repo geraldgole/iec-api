@@ -6,7 +6,7 @@ application:
 logging:
   level:
     root: INFO
-    org.apache.http: DEBUG
+#    org.apache.http: DEBUG
 
 # Enable/disable job run on application's startup
 spring.batch.job.enabled: false

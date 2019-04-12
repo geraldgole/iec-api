@@ -1,6 +1,7 @@
 package com.greencom.empower.importer.service;
 
 
+import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,9 @@ public class ImportService {
             //CustomerAgreements customers =  (CustomerAgreements)unmarshaller.unmarshal(new File("/home/gerald/files/" + file));
             CustomerAgreements customers = (CustomerAgreements) unmarshaller.unmarshal(ss);
 
-            customers.getCustomerAgreement().forEach(customerAgreement -> apiService.processCustomerAgreement(customerAgreement));
+            for (CustomerAgreement customerAgreement : customers.getCustomerAgreement()) {
+                apiService.processCustomerAgreement(customerAgreement);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
