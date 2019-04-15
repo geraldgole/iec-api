@@ -1,6 +1,9 @@
 package com.greencom.empower.importer.batch;
 
+import com.greencom.empower.importer.batch.processors.CustomerAgreementToProviderProcessor;
+import com.greencom.empower.importer.model.Provider;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
+import com.greencom.empower.importer.model.customeragreement.CustomerAgreements;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -35,36 +38,45 @@ public class ProvidersImporterJobConfiguration {
                 .build();
     }
 
+
     @Bean
     public Step customerAgreementProcessing(ItemReader<CustomerAgreement> customerAgreementItemReader,
-                                            ItemWriter<CustomerAgreement> customerAgreementItemWriter) {
+                                            CustomerAgreementToProviderProcessor customerAgreementToProviderProcessor,
+                                            ItemWriter<Provider> customerAgreementItemWriter) {
         return stepBuilderFactory.get("validation_step")
-                .<CustomerAgreement, CustomerAgreement>chunk(100)
+                .<CustomerAgreement, Provider>chunk(100)
                 .reader(customerAgreementItemReader)
+                .processor(customerAgreementToProviderProcessor)
                 .writer(customerAgreementItemWriter)
                 .build();
     }
 
     @Bean
-    public StaxEventItemReader<CustomerAgreement> customerAgreementItemReader(Unmarshaller customerAgreementFileUnmarshaller) {
+    public StaxEventItemReader<CustomerAgreement> customerAgreementItemReader() {
         return new StaxEventItemReaderBuilder<CustomerAgreement>()
                 .name("customer_agreements_item_reader")
-                .resource(new ClassPathResource("customer_agreements.xml"))
+                .resource(new ClassPathResource("customer_agreement.xml"))
                 .addFragmentRootElements("CustomerAgreement")
-                .unmarshaller(customerAgreementFileUnmarshaller)
+                .unmarshaller(customerAgreementUnmarshaller())
+                .strict(false)
                 .build();
     }
 
     @Bean
-    public Unmarshaller customerAgreementFileUnmarshaller() {
+    public Unmarshaller customerAgreementUnmarshaller() {
         Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(CustomerAgreement.class);
+        unmarshaller.setClassesToBeBound(CustomerAgreement.class, CustomerAgreements.class);
         unmarshaller.setCheckForXmlRootElement(false);
         return unmarshaller;
     }
 
     @Bean
-    public ApiItemWriter<CustomerAgreement> customerAgreementItemWriter() {
+    public CustomerAgreementToProviderProcessor customerAgreementToProviderProcessor() {
+        return new CustomerAgreementToProviderProcessor();
+    }
+
+    @Bean
+    public ApiItemWriter<Provider> customerAgreementItemWriter() {
         return new ProviderBatchItemWriter();
     }
 }
