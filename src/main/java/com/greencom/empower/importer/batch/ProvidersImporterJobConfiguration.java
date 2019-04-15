@@ -3,7 +3,6 @@ package com.greencom.empower.importer.batch;
 import com.greencom.empower.importer.batch.processors.CustomerAgreementToProviderProcessor;
 import com.greencom.empower.importer.model.Provider;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
-import com.greencom.empower.importer.model.customeragreement.CustomerAgreements;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -38,7 +37,6 @@ public class ProvidersImporterJobConfiguration {
                 .build();
     }
 
-
     @Bean
     public Step customerAgreementProcessing(ItemReader<CustomerAgreement> customerAgreementItemReader,
                                             CustomerAgreementToProviderProcessor customerAgreementToProviderProcessor,
@@ -64,10 +62,10 @@ public class ProvidersImporterJobConfiguration {
 
     @Bean
     public Unmarshaller customerAgreementUnmarshaller() {
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(CustomerAgreement.class, CustomerAgreements.class);
-        unmarshaller.setCheckForXmlRootElement(false);
-        return unmarshaller;
+        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+        jaxb2Marshaller.setMappedClass(CustomerAgreement.class);
+        jaxb2Marshaller.setClassesToBeBound(CustomerAgreement.class);
+        return jaxb2Marshaller;
     }
 
     @Bean
