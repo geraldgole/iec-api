@@ -14,11 +14,11 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
-import java.io.File;
-import java.io.FileReader;
+import java.io.Reader;
 
 
 @Service
@@ -29,11 +29,11 @@ public class ImportService {
     @Autowired
     private ApiService apiService;
 
-    public void importCustomerAgreement(String file) {
+    public void importCustomerAgreement(Reader inputReader) {
 
         try {
 
-            FileReader fr = new FileReader(new File("/home/gerald/files/" + file));
+
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
             factory.setValidating(false);
@@ -43,7 +43,7 @@ public class ImportService {
             NamespaceFilter filter = new NamespaceFilter("http://iec.ch/TC57/2009/CustomerAgreement#", true);
             filter.setParent(reader);
 
-            InputSource is = new InputSource(fr);
+            InputSource is = new InputSource(inputReader);
             SAXSource ss = new SAXSource(filter, is);
 
 
@@ -52,8 +52,9 @@ public class ImportService {
 
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-            //CustomerAgreements customers =  (CustomerAgreements)unmarshaller.unmarshal(new File("/home/gerald/files/" + file));
-            CustomerAgreements customers = (CustomerAgreements) unmarshaller.unmarshal(ss);
+
+            JAXBElement<CustomerAgreements> root = unmarshaller.unmarshal(ss, CustomerAgreements.class);
+            CustomerAgreements customers = root.getValue();
 
             for (CustomerAgreement customerAgreement : customers.getCustomerAgreement()) {
                 apiService.processCustomerAgreement(customerAgreement);

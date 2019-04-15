@@ -1,7 +1,9 @@
 package com.greencom.empower.importer.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
+import com.greencom.empower.importer.model.customeragreement.UsagePoint;
+import com.greencom.empower.importer.model.customeragreement.UsagePoints;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,10 +12,10 @@ import java.util.Set;
 
 public class Provider {
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String id;
 
-    private Map<String, String> properties;
+    private Map<String, String> properties = new HashMap<>();
 
     private Set<Device> devices = new HashSet<>();
 
@@ -47,6 +49,17 @@ public class Provider {
         addProperty("customer.status.value", customerAgreement.getCustomer().getStatus().getValue());
 
         addProperty("customerAccount.id", customerAgreement.getCustomerAccount().getMRID());
+
+        UsagePoints usagePoints = customerAgreement.getUsagePoints();
+        if (usagePoints != null) {
+            for (UsagePoint usagePoint : usagePoints.getUsagePoint()) {
+                Device device = new Device();
+                device.setId(usagePoint.getMRID());
+                device.addProperty("usagePoint.id", usagePoint.getMRID());
+                device.addProperty("usagePoint.name", usagePoint.getName());
+                devices.add(device);
+            }
+        }
     }
 
     public String getId() {
@@ -79,6 +92,10 @@ public class Provider {
             properties = new HashMap<>();
 
         properties.put(key, value);
+    }
+
+    public String getProperty(String key) {
+        return properties.get(key);
     }
 
     @Override

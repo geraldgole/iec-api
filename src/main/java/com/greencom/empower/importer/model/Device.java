@@ -12,6 +12,7 @@ public class Device {
 
     private Set<Endpoint> endpoints;
 
+    private String providerId;
 
     public Device() {
     }
@@ -38,6 +39,14 @@ public class Device {
 
     public void setEndpoints(Set<Endpoint> endpoints) {
         this.endpoints = endpoints;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     public void addProperty(String key, String value) {

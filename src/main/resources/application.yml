@@ -1,3 +1,5 @@
+message: Greetings from importer application
+
 application:
   api:
     uri: https://avisto.gcn-eibp.com/api
