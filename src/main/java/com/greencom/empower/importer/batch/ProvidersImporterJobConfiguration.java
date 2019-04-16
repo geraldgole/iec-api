@@ -7,11 +7,13 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.batch.item.xml.builder.StaxEventItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -38,7 +40,8 @@ public class ProvidersImporterJobConfiguration {
 
     @Bean
     public Step customerAgreementProcessing(ItemReader<CustomerAgreement> customerAgreementItemReader,
-                                            ItemWriter<CustomerAgreement> customerAgreementItemWriter) {
+                                            ItemWriter<CustomerAgreement> customerAgreementItemWriter)
+    {
         return stepBuilderFactory.get("validation_step")
                 .<CustomerAgreement, CustomerAgreement>chunk(100)
                 .reader(customerAgreementItemReader)
@@ -47,10 +50,11 @@ public class ProvidersImporterJobConfiguration {
     }
 
     @Bean
-    public StaxEventItemReader<CustomerAgreement> customerAgreementItemReader() {
+    @StepScope
+    public StaxEventItemReader<CustomerAgreement> customerAgreementItemReader(@Value("#{jobParameters['file']}") String filePath) {
         return new StaxEventItemReaderBuilder<CustomerAgreement>()
                 .name("customer_agreements_item_reader")
-                .resource(new ClassPathResource("customer_agreement.xml"))
+                .resource(new ClassPathResource(filePath))
                 .addFragmentRootElements("CustomerAgreement")
                 .unmarshaller(customerAgreementUnmarshaller())
                 .strict(false)
