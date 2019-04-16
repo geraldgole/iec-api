@@ -4,23 +4,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import com.greencom.empower.importer.model.customeragreement.UsagePoint;
 import com.greencom.empower.importer.model.customeragreement.UsagePoints;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Provider {
+@Getter
+@Setter
+@NoArgsConstructor
+public class Provider extends AbstractEntity {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String id;
-
     private Map<String, String> properties = new HashMap<>();
-
     private Set<Device> devices = new HashSet<>();
 
-    public Provider() {
-    }
 
     public Provider(CustomerAgreement customerAgreement) {
 
@@ -62,48 +64,14 @@ public class Provider {
         }
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
-
-    public Set<Device> getDevices() {
-        return devices;
-    }
-
-    public void setDevices(Set<Device> devices) {
-        this.devices = devices;
-    }
-
     public void addProperty(String key, String value) {
-
-        if (properties == null)
+        if (properties == null) {
             properties = new HashMap<>();
-
+        }
         properties.put(key, value);
     }
 
     public String getProperty(String key) {
         return properties.get(key);
-    }
-
-    @Override
-    public String toString() {
-        return "{"
-                + "\"id\": \"" + id + "\""
-                + ", \"properties\": " + properties
-                + ", \"devices\": " + devices
-                + "}";
     }
 }

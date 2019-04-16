@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class CustomerAgreementException extends RuntimeException {
 
     public CustomerAgreementException() {
-        this("CustomerAgreemet exception");
+        super();
     }
 
-    public CustomerAgreementException(String message) {
-        this(message, null);
+    public CustomerAgreementException(final String message) {
+        super(message);
     }
 
-    public CustomerAgreementException(String message, Throwable cause) {
+    public CustomerAgreementException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }
