@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
@@ -53,7 +54,7 @@ public class ProvidersImporterJobConfiguration {
     public StaxEventItemReader<CustomerAgreement> customerAgreementItemReader(@Value("#{jobParameters['file']}") String filePath) {
         return new StaxEventItemReaderBuilder<CustomerAgreement>()
                 .name("customer_agreements_item_reader")
-                .resource(new ClassPathResource(filePath))
+                .resource(new FileSystemResource(filePath))
                 .addFragmentRootElements("CustomerAgreement")
                 .unmarshaller(customerAgreementUnmarshaller())
                 .strict(false)
