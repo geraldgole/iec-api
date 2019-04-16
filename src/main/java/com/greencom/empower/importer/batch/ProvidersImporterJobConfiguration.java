@@ -1,7 +1,6 @@
 package com.greencom.empower.importer.batch;
 
 import com.greencom.empower.importer.batch.processors.CustomerAgreementToProviderProcessor;
-import com.greencom.empower.importer.model.Provider;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -39,12 +38,10 @@ public class ProvidersImporterJobConfiguration {
 
     @Bean
     public Step customerAgreementProcessing(ItemReader<CustomerAgreement> customerAgreementItemReader,
-                                            CustomerAgreementToProviderProcessor customerAgreementToProviderProcessor,
-                                            ItemWriter<Provider> customerAgreementItemWriter) {
+                                            ItemWriter<CustomerAgreement> customerAgreementItemWriter) {
         return stepBuilderFactory.get("validation_step")
-                .<CustomerAgreement, Provider>chunk(100)
+                .<CustomerAgreement, CustomerAgreement>chunk(100)
                 .reader(customerAgreementItemReader)
-                .processor(customerAgreementToProviderProcessor)
                 .writer(customerAgreementItemWriter)
                 .build();
     }
@@ -68,13 +65,14 @@ public class ProvidersImporterJobConfiguration {
         return jaxb2Marshaller;
     }
 
+    // TODO : remove if no item processor is used during the validation_step
     @Bean
     public CustomerAgreementToProviderProcessor customerAgreementToProviderProcessor() {
         return new CustomerAgreementToProviderProcessor();
     }
 
     @Bean
-    public ApiItemWriter<Provider> customerAgreementItemWriter() {
-        return new ProviderBatchItemWriter();
+    public ApiItemWriter<CustomerAgreement> customerAgreementItemWriter() {
+        return new CustomerAgreementBatchItemWriter();
     }
 }
