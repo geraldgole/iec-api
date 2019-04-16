@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ApiService {
+public class CustomerAgreementService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerAgreementService.class);
 
     @Value("${application.api.uri}")
     private String baseUri;

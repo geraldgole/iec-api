@@ -4,6 +4,12 @@ application:
   api:
     uri: https://avisto.gcn-eibp.com/api
     key: 3a403b7b-ffaa-4da8-89fa-c7f59bd62e8a
+  scheduling:
+    enabled: true
+  task:
+    customeragreement:
+      source: /tmp/CA
+      cron: "0 * * * * ?"
 
 logging:
   level:
