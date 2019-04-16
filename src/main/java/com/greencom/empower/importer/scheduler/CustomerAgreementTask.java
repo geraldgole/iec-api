@@ -27,15 +27,21 @@ public class CustomerAgreementTask {
 
         LOGGER.info("Start cron to check customer agreement files");
         try {
-            List<Path> walk = Files.walk(Paths.get(sourceFolder)).filter(Files::isRegularFile).collect(Collectors.toList());
-            for (Path path : walk) {
+            List<Path> fileList = Files
+                    .list(Paths.get(sourceFolder))
+                    .filter(Files::isRegularFile)
+                    .filter(f -> f.endsWith(".xml"))
+                    .collect(Collectors.toList());
+
+            for (Path path : fileList) {
                 try {
                     LOGGER.info("Found file {}", path.toString());
-                    Path newPath = Paths.get(path.getParent().toString(), "to_process", path.getFileName().toString());
+                    Path toProcessDirectoryPath = Paths.get(path.getParent().toString(), "to_process");
+                    Path newPath = Paths.get(toProcessDirectoryPath.toString(), path.getFileName().toString());
+                    if (!Files.exists(toProcessDirectoryPath)) {
+                        Files.createDirectory(toProcessDirectoryPath);
+                    }
                     Files.move(path, newPath);
-
-                    // TODO: call Spring batch with file as parameter
-
                 } catch (IOException e) {
                     LOGGER.error("Failed to move file {}", path);
                 }
