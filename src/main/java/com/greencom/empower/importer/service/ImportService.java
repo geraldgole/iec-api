@@ -27,7 +27,7 @@ public class ImportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportService.class);
 
     @Autowired
-    private ApiService apiService;
+    private CustomerAgreementService apiService;
 
     public void importCustomerAgreement(Reader inputReader) {
 

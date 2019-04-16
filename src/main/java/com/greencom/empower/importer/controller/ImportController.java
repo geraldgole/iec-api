@@ -1,7 +1,7 @@
 package com.greencom.empower.importer.controller;
 
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
-import com.greencom.empower.importer.service.ApiService;
+import com.greencom.empower.importer.service.CustomerAgreementService;
 import com.greencom.empower.importer.service.ImportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +25,12 @@ public class ImportController {
     private ImportService importService;
 
     @Autowired
-    private ApiService apiService;
+    private CustomerAgreementService customerAgreementService;
 
     @PostMapping("/customer")
     public ResponseEntity importCustomerAgreement(@RequestParam String file) throws Exception {
 
-        FileReader fr = new FileReader(new File("/home/gerald/files/" + file));
+        FileReader fr = new FileReader(new File(file));
         importService.importCustomerAgreement(fr);
 
         return new ResponseEntity(HttpStatus.OK);
@@ -48,7 +48,7 @@ public class ImportController {
     @PostMapping("/customer-agreement")
     public ResponseEntity importCustomerAgreement(@RequestBody CustomerAgreement customerAgreement) throws Exception {
 
-        apiService.processCustomerAgreement(customerAgreement);
+        customerAgreementService.processCustomerAgreement(customerAgreement);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
