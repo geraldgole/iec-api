@@ -3,7 +3,6 @@ package com.greencom.empower.importer.scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class CustomerAgreementTask {
             List<Path> fileList = Files
                     .list(Paths.get(sourceFolder))
                     .filter(Files::isRegularFile)
-                    .filter(f -> f.endsWith(".xml"))
+                    .filter(f -> f.toString().endsWith(".xml"))
                     .collect(Collectors.toList());
 
             for (Path path : fileList) {
@@ -54,10 +53,11 @@ public class CustomerAgreementTask {
                         Files.createDirectory(toProcessDirectoryPath);
                     }
                     Files.move(path, newPath);
-                    JobExecution execution = jobLauncher.run(providerImporterJob,
-                            new JobParametersBuilder().addString("file",newPath.toString())
-                                    .toJobParameters()
-                    );
+                    jobLauncher.run(
+                            providerImporterJob,
+                            new JobParametersBuilder()
+                                    .addString("file", newPath.toString())
+                                    .toJobParameters());
                 } catch (IOException e) {
                     LOGGER.error("Failed to move file {}", path);
                 } catch (Exception e) {
