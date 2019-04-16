@@ -2,7 +2,13 @@ package com.greencom.empower.importer.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@EnableScheduling
 public class CustomerAgreementTask {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomerAgreementTask.class);
@@ -21,6 +28,11 @@ public class CustomerAgreementTask {
     @Value("${application.task.customeragreement.source}")
     private String sourceFolder;
 
+    @Autowired
+    private JobLauncher jobLauncher;
+
+    @Autowired
+    private Job providerImporterJob;
 
     @Scheduled(cron = "${application.task.customeragreement.cron}")
     public void checkFiles() {
@@ -42,8 +54,14 @@ public class CustomerAgreementTask {
                         Files.createDirectory(toProcessDirectoryPath);
                     }
                     Files.move(path, newPath);
+                    JobExecution execution = jobLauncher.run(providerImporterJob,
+                            new JobParametersBuilder().addString("file",newPath.toString())
+                                    .toJobParameters()
+                    );
                 } catch (IOException e) {
                     LOGGER.error("Failed to move file {}", path);
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage());
                 }
             }
         } catch (IOException e) {
