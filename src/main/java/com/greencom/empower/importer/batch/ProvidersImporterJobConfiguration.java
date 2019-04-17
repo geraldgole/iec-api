@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -73,10 +72,5 @@ public class ProvidersImporterJobConfiguration {
     @Bean
     public CustomerAgreementToProviderProcessor customerAgreementToProviderProcessor() {
         return new CustomerAgreementToProviderProcessor();
-    }
-
-    @Bean
-    public ApiItemWriter<CustomerAgreement> customerAgreementItemWriter() {
-        return new CustomerAgreementBatchItemWriter();
     }
 }
