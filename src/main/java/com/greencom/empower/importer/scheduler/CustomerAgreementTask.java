@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class CustomerAgreementTask {
                     if (!Files.exists(toProcessDirectoryPath)) {
                         Files.createDirectory(toProcessDirectoryPath);
                     }
-                    Files.move(path, newPath);
+                    Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
                     jobLauncher.run(
                             providerImporterJob,
                             new JobParametersBuilder()

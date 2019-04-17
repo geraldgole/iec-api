@@ -1,20 +1,21 @@
 package com.greencom.empower.importer.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.greencom.empower.importer.model.Device;
 import com.greencom.empower.importer.model.Provider;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
+import com.greencom.empower.importer.model.customeragreement.UsagePoint;
+import com.greencom.empower.importer.model.customeragreement.UsagePoints;
 import com.greencom.empower.importer.model.exception.CustomerAgreementException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,39 +32,52 @@ public class CustomerAgreementService {
     private RestTemplate restTemplate;
 
 
-    public void processCustomerAgreement(CustomerAgreement customerAgreement) throws IOException {
+    public void processCustomerAgreement(CustomerAgreement customerAgreement) {
 
+        try {
+            List<Provider> providers = getProviders(customerAgreement.getMRID());
+            if (providers.size() == 0) {
 
-        List<Provider> providers = getProviders(customerAgreement.getMRID());
-        if (providers.size() == 0) {
+                LOGGER.debug("Customer agreement {} does not exists", customerAgreement.getMRID());
+                createCustomerAgreement(customerAgreement);
 
-            LOGGER.debug("Customer agreement {} does not exists", customerAgreement.getMRID());
-            createCustomerAgreement(customerAgreement);
-
-        } else {
-            processExistingCustomerAgreement(customerAgreement, providers);
+            } else {
+                processExistingCustomerAgreement(customerAgreement, providers);
+            }
+        } catch (RestClientResponseException e) {
+            LOGGER.error("Failed to call api ({}) : {}", e.getRawStatusCode(), e.getMessage());
         }
     }
 
 
-    private List<Provider> getProviders(String id) throws IOException {
+    private List<Provider> getProviders(String id) {
 
-        ResponseEntity<Provider[]> providers = restTemplate.getForEntity(baseUri + "/providers?provider.type=customerAgreement&mrid={id}", Provider[].class, id);
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        Provider[] body = providers.getBody();
-        return Arrays.asList(body);
+        Provider[] providers = restTemplate.getForObject(baseUri + "/providers?provider.type=customerAgreement&mrid={id}", Provider[].class, id);
+        return Arrays.asList(providers);
     }
 
     private void createCustomerAgreement(CustomerAgreement customerAgreement) {
 
-        Provider provider = new Provider(customerAgreement);
-
-        try {
-            restTemplate.postForLocation(baseUri + "/providers", provider);
-        } catch (RestClientException e) {
-            e.printStackTrace();
+        UsagePoints ups = customerAgreement.getUsagePoints();
+        if (ups != null) {
+            for (UsagePoint up : ups.getUsagePoint()) {
+                Device[] devices = restTemplate.getForObject(baseUri + "/devices?usagePoint.id={id}", Device[].class, up.getMRID());
+                for (Device device : devices) {
+                    Provider provider = restTemplate.getForObject(baseUri + "/providers/{id}", Provider.class, device.getProviderId());
+                    String startStr = provider.getProperty("validityInterval.start");
+                    LOGGER.warn(startStr);
+                    Instant start = Instant.parse(startStr);
+                    Instant end = Instant.parse(provider.getProperty("validityInterval.end"));
+                    Instant now = Instant.now();
+                    if (now.isAfter(start) && now.isBefore(end)) {
+                        throw new CustomerAgreementException(String.format("An already active customer agreement (%s) exists for this usage point (%s)", provider.getId(), device.getId()));
+                    }
+                }
+            }
         }
+
+        Provider provider = new Provider(customerAgreement);
+        restTemplate.postForLocation(baseUri + "/providers", provider);
     }
 
 
@@ -80,13 +94,12 @@ public class CustomerAgreementService {
                 .filter(provider -> StringUtils.equals(provider.getProperty("service.id"), customerAgreement.getServiceCategory().getMRID()))
                 .findFirst();
 
-
         if (opt.isPresent()) {
             // update provider
             Provider provider = opt.get();
             provider.addProperty("validityInterval.end", customerAgreement.getValidityInterval().getEnd().toString());
 
-            LOGGER.warn("Updating customer agreement {} validity interval end date to {}", customerAgreement.getMRID(), customerAgreement.getValidityInterval().getEnd().toString());
+            LOGGER.debug("Updating customer agreement {} validity interval end date to {}", customerAgreement.getMRID(), customerAgreement.getValidityInterval().getEnd().toString());
             restTemplate.put(String.format("%s/providers/%s", baseUri, provider.getId()), provider);
         } else {
             // new Service, so create new Provider
