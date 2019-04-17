@@ -2,6 +2,7 @@ package com.greencom.empower.importer.service;
 
 import com.greencom.empower.importer.model.Device;
 import com.greencom.empower.importer.model.Provider;
+import com.greencom.empower.importer.model.ProviderType;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import com.greencom.empower.importer.model.customeragreement.UsagePoint;
 import com.greencom.empower.importer.model.customeragreement.UsagePoints;
@@ -10,13 +11,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,35 +23,20 @@ public class CustomerAgreementService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerAgreementService.class);
 
-    @Value("${application.api.uri}")
-    private String baseUri;
-
     @Autowired
-    private RestTemplate restTemplate;
+    private ApiService apiService;
 
 
     public void processCustomerAgreement(CustomerAgreement customerAgreement) {
 
-        try {
-            List<Provider> providers = getProviders(customerAgreement.getMRID());
-            if (providers.size() == 0) {
+        List<Provider> providers = apiService.getProviders(ProviderType.CUSTOMER_AGREEMENT, Collections.singletonMap("mrid", customerAgreement.getMRID()));
+        if (providers.size() == 0) {
+            LOGGER.debug("Customer agreement {} does not exists", customerAgreement.getMRID());
+            createCustomerAgreement(customerAgreement);
 
-                LOGGER.debug("Customer agreement {} does not exists", customerAgreement.getMRID());
-                createCustomerAgreement(customerAgreement);
-
-            } else {
-                processExistingCustomerAgreement(customerAgreement, providers);
-            }
-        } catch (RestClientResponseException e) {
-            LOGGER.error("Failed to call api ({}) : {}", e.getRawStatusCode(), e.getMessage());
+        } else {
+            processExistingCustomerAgreement(customerAgreement, providers);
         }
-    }
-
-
-    private List<Provider> getProviders(String id) {
-
-        Provider[] providers = restTemplate.getForObject(baseUri + "/providers?provider.type=customerAgreement&mrid={id}", Provider[].class, id);
-        return Arrays.asList(providers);
     }
 
     private void createCustomerAgreement(CustomerAgreement customerAgreement) {
@@ -61,12 +44,10 @@ public class CustomerAgreementService {
         UsagePoints ups = customerAgreement.getUsagePoints();
         if (ups != null) {
             for (UsagePoint up : ups.getUsagePoint()) {
-                Device[] devices = restTemplate.getForObject(baseUri + "/devices?usagePoint.id={id}", Device[].class, up.getMRID());
+                List<Device> devices = apiService.getDevices(Collections.singletonMap("usagePoint.id", up.getMRID()));
                 for (Device device : devices) {
-                    Provider provider = restTemplate.getForObject(baseUri + "/providers/{id}", Provider.class, device.getProviderId());
-                    String startStr = provider.getProperty("validityInterval.start");
-                    LOGGER.warn(startStr);
-                    Instant start = Instant.parse(startStr);
+                    Provider provider = apiService.getProvider(device.getProviderId());
+                    Instant start = Instant.parse(provider.getProperty("validityInterval.start"));
                     Instant end = Instant.parse(provider.getProperty("validityInterval.end"));
                     Instant now = Instant.now();
                     if (now.isAfter(start) && now.isBefore(end)) {
@@ -77,7 +58,7 @@ public class CustomerAgreementService {
         }
 
         Provider provider = new Provider(customerAgreement);
-        restTemplate.postForLocation(baseUri + "/providers", provider);
+        apiService.createProvider(provider);
     }
 
 
@@ -100,7 +81,7 @@ public class CustomerAgreementService {
             provider.addProperty("validityInterval.end", customerAgreement.getValidityInterval().getEnd().toString());
 
             LOGGER.debug("Updating customer agreement {} validity interval end date to {}", customerAgreement.getMRID(), customerAgreement.getValidityInterval().getEnd().toString());
-            restTemplate.put(String.format("%s/providers/%s", baseUri, provider.getId()), provider);
+            apiService.updateProvider(provider.getId(), provider);
         } else {
             // new Service, so create new Provider
             LOGGER.warn("Creating new customer agreement for {} with service type {}", customerAgreement.getMRID(), customerAgreement.getServiceCategory().getName());
