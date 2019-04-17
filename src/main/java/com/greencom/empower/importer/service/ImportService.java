@@ -27,7 +27,7 @@ public class ImportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportService.class);
 
     @Autowired
-    private CustomerAgreementService apiService;
+    private CustomerAgreementService customerAgreementService;
 
     public void importCustomerAgreement(Reader inputReader) {
 
@@ -57,7 +57,7 @@ public class ImportService {
             CustomerAgreements customers = root.getValue();
 
             for (CustomerAgreement customerAgreement : customers.getCustomerAgreement()) {
-                apiService.processCustomerAgreement(customerAgreement);
+                customerAgreementService.process(customerAgreement);
             }
 
         } catch (Exception e) {

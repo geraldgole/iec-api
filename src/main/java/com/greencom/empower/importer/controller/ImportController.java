@@ -57,7 +57,7 @@ public class ImportController {
     @PostMapping("/customer-agreement")
     public ResponseEntity importCustomerAgreement(@RequestBody CustomerAgreement customerAgreement) {
 
-        customerAgreementService.processCustomerAgreement(customerAgreement);
+        customerAgreementService.process(customerAgreement);
         return new ResponseEntity(HttpStatus.OK);
     }
 

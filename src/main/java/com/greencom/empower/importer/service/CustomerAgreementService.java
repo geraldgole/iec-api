@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomerAgreementService {
+public class CustomerAgreementService implements BusinessApiService<CustomerAgreement> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerAgreementService.class);
 
@@ -27,7 +27,8 @@ public class CustomerAgreementService {
     private ApiService apiService;
 
 
-    public void processCustomerAgreement(CustomerAgreement customerAgreement) {
+    @Override
+    public void process(CustomerAgreement customerAgreement) {
 
         List<Provider> providers = apiService.getProviders(ProviderType.CUSTOMER_AGREEMENT, Collections.singletonMap("mrid", customerAgreement.getMRID()));
         if (providers.size() == 0) {
