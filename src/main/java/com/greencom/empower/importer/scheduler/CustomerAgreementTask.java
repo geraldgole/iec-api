@@ -3,8 +3,10 @@ package com.greencom.empower.importer.scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,12 +54,18 @@ public class CustomerAgreementTask {
                     if (!Files.exists(toProcessDirectoryPath)) {
                         Files.createDirectory(toProcessDirectoryPath);
                     }
+
                     Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
+
+                    // The execution time is used to distinguish each instance of job execution
+                    Instant executionTime = Instant.now();
                     jobLauncher.run(
                             providerImporterJob,
                             new JobParametersBuilder()
                                     .addString("file", newPath.toString())
-                                    .toJobParameters());
+                                    .addString("execution_time", executionTime.toString(), true)
+                                    .toJobParameters()
+                            );
                 } catch (IOException e) {
                     LOGGER.error("Failed to move file {}", path);
                 } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.greencom.empower.importer.batch;
 
+import com.greencom.empower.importer.batch.exceptions.BatchRecoverableException;
 import com.greencom.empower.importer.batch.processors.CustomerAgreementToProviderProcessor;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import org.springframework.batch.core.Job;
@@ -24,6 +25,8 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 @EnableBatchProcessing
 public class ProvidersImporterJobConfiguration {
 
+    private final int RETRY_LIMIT = 3;
+
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
 
@@ -45,6 +48,10 @@ public class ProvidersImporterJobConfiguration {
                 .<CustomerAgreement, CustomerAgreement>chunk(100)
                 .reader(customerAgreementItemReader)
                 .writer(customerAgreementItemWriter)
+                .faultTolerant()
+                .noRollback(BatchRecoverableException.class)
+                .retry(BatchRecoverableException.class)
+                .retryLimit(this.RETRY_LIMIT)
                 .build();
     }
 
