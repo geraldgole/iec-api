@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
@@ -25,7 +26,10 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 @EnableBatchProcessing
 public class ProvidersImporterJobConfiguration {
 
-    private final int RETRY_LIMIT = 3;
+    private static final int RETRY_LIMIT = 3;
+
+    @Value("classpath:schemas/CustomerAgreements.xsd")
+    private Resource customerAgreementsSchema;
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
@@ -51,7 +55,7 @@ public class ProvidersImporterJobConfiguration {
                 .faultTolerant()
                 .noRollback(BatchRecoverableException.class)
                 .retry(BatchRecoverableException.class)
-                .retryLimit(this.RETRY_LIMIT)
+                .retryLimit(RETRY_LIMIT)
                 .build();
     }
 
@@ -72,6 +76,7 @@ public class ProvidersImporterJobConfiguration {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
         jaxb2Marshaller.setMappedClass(CustomerAgreement.class);
         jaxb2Marshaller.setClassesToBeBound(CustomerAgreement.class);
+        jaxb2Marshaller.setSchema(this.customerAgreementsSchema);
         return jaxb2Marshaller;
     }
 
