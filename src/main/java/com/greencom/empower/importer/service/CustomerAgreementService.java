@@ -65,10 +65,12 @@ public class CustomerAgreementService implements BusinessApiService<CustomerAgre
 
     private void processExistingCustomerAgreement(CustomerAgreement customerAgreement, List<Provider> providers) {
 
+        // Providers should contain ONLY ONE provider according to O. Brie
 
+        // Check if CA is assigned to a different customer
         if (providers.stream().anyMatch(provider ->
                 !StringUtils.equals(provider.getProperty("customer.id"), customerAgreement.getCustomer().getMRID()))) {
-            throw new CustomerAgreementException(String.format("Customer agreement %s already assigned to a different customer", customerAgreement.getCustomer().getMRID()));
+            throw new CustomerAgreementException(String.format("Customer agreement %s already assigned to a different customer {}", customerAgreement.getMRID(), customerAgreement.getCustomer().getMRID()));
         }
 
         // Search provider from service id
@@ -76,17 +78,33 @@ public class CustomerAgreementService implements BusinessApiService<CustomerAgre
                 .filter(provider -> StringUtils.equals(provider.getProperty("service.id"), customerAgreement.getServiceCategory().getMRID()))
                 .findFirst();
 
+        // Check if service is the same between Provider and CustomerAgreement
         if (opt.isPresent()) {
             // update provider
             Provider provider = opt.get();
-            provider.addProperty("validityInterval.end", customerAgreement.getValidityInterval().getEnd().toString());
+
+            // Check if UsagePoints sets are identical
+            if (customerAgreement.getUsagePoints().getUsagePoint().size() != provider.getDevices().size()) {
+                LOGGER.error("Customer agreement {} has different usage points assigned", customerAgreement.getMRID());
+                throw new CustomerAgreementException(String.format("Customer agreement {} has different usage points assigned", customerAgreement.getMRID()));
+            }
+
+            // Compare each Usage Point with each device in provider
+            for (UsagePoint up : customerAgreement.getUsagePoints().getUsagePoint()) {
+                if (provider.getDevices().stream().noneMatch(device -> device.getId().equals(up.getMRID()))) {
+                    LOGGER.error("Customer agreement {} already assigned to different usage point {}", customerAgreement.getMRID(), up.getMRID());
+                    throw new CustomerAgreementException(String.format("Customer agreement %s already assigned to a different usage point", customerAgreement.getMRID(), up.getMRID()));
+                }
+            }
 
             LOGGER.debug("Updating customer agreement {} validity interval end date to {}", customerAgreement.getMRID(), customerAgreement.getValidityInterval().getEnd().toString());
+            provider.addProperty("validityInterval.end", customerAgreement.getValidityInterval().getEnd().toString());
             apiService.updateProvider(provider.getId(), provider);
+
         } else {
             // new Service, so create new Provider
-            LOGGER.warn("Creating new customer agreement for {} with service type {}", customerAgreement.getMRID(), customerAgreement.getServiceCategory().getName());
-            createCustomerAgreement(customerAgreement);
+            LOGGER.error("Customer agreement {} already assigned to different service {}", customerAgreement.getMRID(), customerAgreement.getServiceCategory().getName());
+            throw new CustomerAgreementException(String.format("Customer agreement %s already assigned to a different service", customerAgreement.getMRID(), customerAgreement.getServiceCategory().getMRID()));
         }
     }
 }
