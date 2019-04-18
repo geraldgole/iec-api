@@ -63,7 +63,7 @@ public class ProvidersImporterJobConfiguration {
                 .resource(new FileSystemResource(filePath))
                 .addFragmentRootElements("CustomerAgreement")
                 .unmarshaller(customerAgreementUnmarshaller())
-                .strict(false)
+                .strict(true)
                 .build();
     }
 
