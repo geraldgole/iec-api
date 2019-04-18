@@ -22,6 +22,7 @@ spring.batch.job.enabled: false
 spring:
   profiles:
     active: prod
+
 ---
 
 spring:
@@ -37,5 +38,24 @@ spring:
 
 spring:
   profiles: test
-  customeragreement:
-    source: /test/resources/inputs/customer_agreements
+
+customeragreement:
+  source: /test/resources/inputs/customer_agreements
+
+---
+
+profiles: remote
+
+server:
+  port: 8081
+
+application:
+  importService:
+    host: http://localhost:8081
+
+---
+
+spring:
+  profiles: batch
+  main:
+    web-application-type: none

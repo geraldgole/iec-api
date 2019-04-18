@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Profile({"prod", "dev"})
+@Profile({"prod", "dev", "batch", "standalone"})
 public class CustomerAgreementTask {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomerAgreementTask.class);
@@ -50,7 +50,7 @@ public class CustomerAgreementTask {
                     .filter(f -> f.toString().endsWith(".xml"))
                     .collect(Collectors.toList());
 
-            if ( fileList.isEmpty() ) {
+            if (fileList.isEmpty()) {
                 LOGGER.info("Cron: no customer agreement files found");
             }
 
@@ -64,7 +64,7 @@ public class CustomerAgreementTask {
                     }
 
                     Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
-                    LOGGER.info("Cron: moved file {} to {}", path,newPath);
+                    LOGGER.info("Cron: moved file {} to {}", path, newPath);
 
                     try {
                         launchJob(newPath.toString());
@@ -73,7 +73,6 @@ public class CustomerAgreementTask {
                         LOGGER.info("Cron: cancelling file {} move operation", path);
                         Files.move(newPath, path, StandardCopyOption.REPLACE_EXISTING);
                     }
-
                 } catch (IOException e) {
                     LOGGER.error("Cron: failed to move file {}", path);
                 }
