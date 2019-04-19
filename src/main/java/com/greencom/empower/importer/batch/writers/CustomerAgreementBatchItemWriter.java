@@ -1,4 +1,4 @@
-package com.greencom.empower.importer.batch;
+package com.greencom.empower.importer.batch.writers;
 
 import com.greencom.empower.importer.batch.services.CustomerAgreementBusinessServiceAdapter;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
@@ -18,8 +18,8 @@ public class CustomerAgreementBatchItemWriter extends AbstractApiItemWriter<Cust
 
     private static final Logger log = LoggerFactory.getLogger(CustomerAgreementBatchItemWriter.class);
 
-    public CustomerAgreementBatchItemWriter(@Autowired CustomerAgreementBusinessServiceAdapter customerAgreementService) {
-        batchBusinessApiService = customerAgreementService;
+    public CustomerAgreementBatchItemWriter(@Autowired CustomerAgreementBusinessServiceAdapter customerAgreementBusinessServiceAdapter) {
+        batchBusinessApiService = customerAgreementBusinessServiceAdapter;
     }
 
     @Override

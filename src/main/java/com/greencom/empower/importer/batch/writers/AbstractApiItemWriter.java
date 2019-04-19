@@ -1,4 +1,4 @@
-package com.greencom.empower.importer.batch;
+package com.greencom.empower.importer.batch.writers;
 
 import com.greencom.empower.importer.batch.services.BatchBusinessApiService;
 import org.springframework.batch.item.ItemWriter;
