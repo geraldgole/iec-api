@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomerAgreements xmlns="http://iec.ch/TC57/2009/CustomerAgreement#">
+    <CustomerAgreement>
+        <mRID>CA-7884</mRID>
+        <name>CA-7884</name>
+        <status>
+            <dateTime>2012-12-13T12:12:12</dateTime>
+            <value>ACTIVE</value>
+        </status>
+        <docStatus>
+            <dateTime>2012-12-13T12:12:12</dateTime>
+            <reason>str1234</reason>
+            <value>approved</value>
+        </docStatus>
+    
+        <title>agreement title</title>
+        <subject>agreement subject</subject>
+        <revisionNumber>1.0.0</revisionNumber> <!-- ?? -->
+    
+        <lastModifiedDateTime>2012-12-13T12:12:12Z</lastModifiedDateTime>
+        <createdDateTime>2012-12-13T12:12:12Z</createdDateTime>
+    
+        <type>document type</type>
+    
+        <validityInterval>
+            <end>2019-12-13T12:12:12Z</end>
+            <start>2012-12-13T12:12:12Z</start>
+        </validityInterval>
+    
+        <signDate>2012-12-13</signDate> <!-- date only -->
+    
+        <ServiceCategory>
+            <mRID>SC-1234</mRID>
+            <name>flat</name>
+        </ServiceCategory>
+        <UsagePoints>
+            <UsagePoint>
+                <mRID>UP-18</mRID>
+                <name>usage18</name>
+            </UsagePoint>
+        </UsagePoints>
+        <ServiceSupplier>
+            <mRID>GCN</mRID>
+        </ServiceSupplier>
+        <Customer>
+            <mRID>C-1880</mRID>
+            <name>tartenpion</name>
+            <status>
+                <dateTime>2012-12-13T12:12:12</dateTime>
+                <value>ACTIVE</value>
+            </status>
+        </Customer>
+        <CustomerAccount>
+            <mRID>C-1880</mRID> <!-- same value as Customer.mRID since we do not use this attribute -->
+        </CustomerAccount>
+    </CustomerAgreement>
+
+    <CustomerAgreement>
+        <mRID>CA-78</mRID>
+        <name>CA-78</name>
+        <status>
+            <dateTime>2012-12-13T12:12:12</dateTime>
+            <value>ACTIVE</value>
+        </status>
+        <docStatus>
+            <dateTime>2012-12-13T12:12:12</dateTime>
+            <reason>str1234</reason>
+            <value>approved</value>
+        </docStatus>
+    
+        <title>agreement title</title>
+        <subject>agreement subject</subject>
+        <revisionNumber>1.0.0</revisionNumber> <!-- ?? -->
+    
+        <lastModifiedDateTime>2012-12-13T12:12:12Z</lastModifiedDateTime>
+        <createdDateTime>2012-12-13T12:12:12Z</createdDateTime>
+    
+        <type>document type</type>
+    
+        <validityInterval>
+            <end>2032-12-13T12:12:12Z</end>
+            <start>2019-12-13T12:12:12Z</start>
+        </validityInterval>
+    
+        <signDate>2012-12-13</signDate> <!-- date only -->
+    
+        <ServiceCategory>
+            <mRID>NSC-5678</mRID>
+            <name>flat</name>
+        </ServiceCategory>
+        <UsagePoints>
+            <UsagePoint>
+                <mRID>UP-134</mRID>
+                <name>usage134</name>
+            </UsagePoint>
+        </UsagePoints>
+        <ServiceSupplier>
+            <mRID>GCN</mRID>
+        </ServiceSupplier>
+        <Customer>
+            <mRID>C-96</mRID>
+            <name>arnold</name>
+            <status>
+                <dateTime>2012-12-13T12:12:12</dateTime>
+                <value>ACTIVE</value>
+            </status>
+        </Customer>
+        <CustomerAccount>
+            <mRID>C-96</mRID> <!-- same value as Customer.mRID since we do not use this attribute -->
+        </CustomerAccount>
+    </CustomerAgreement>
+</CustomerAgreements>

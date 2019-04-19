@@ -1,5 +1,4 @@
 message: Greetings from importer application
-
 application:
   api:
     uri: https://avisto.gcn-eibp.com/api
@@ -19,6 +18,10 @@ logging:
 
 # Enable/disable job run on application's startup
 spring.batch.job.enabled: false
+
+spring:
+  profiles:
+    active: prod
 ---
 
 spring:
@@ -30,3 +33,9 @@ spring:
 spring:
   profiles: prod
 
+---
+
+spring:
+  profiles: test
+  customeragreement:
+    source: /test/resources/inputs/customer_agreements
