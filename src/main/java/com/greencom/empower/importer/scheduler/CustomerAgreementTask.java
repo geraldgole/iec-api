@@ -11,6 +11,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Profile({"prod", "dev"})
 public class CustomerAgreementTask {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomerAgreementTask.class);
@@ -64,12 +66,16 @@ public class CustomerAgreementTask {
                     Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
                     LOGGER.info("Cron: moved file {} to {}", path,newPath);
 
-                    launchJob(newPath.toString());
+                    try {
+                        launchJob(newPath.toString());
+                    } catch (Exception e) {
+                        LOGGER.error(String.format("Job: %s", e.getMessage()));
+                        LOGGER.info("Cron: cancelling file {} move operation", path);
+                        Files.move(newPath, path, StandardCopyOption.REPLACE_EXISTING);
+                    }
 
                 } catch (IOException e) {
                     LOGGER.error("Cron: failed to move file {}", path);
-                } catch (Exception e) {
-                    LOGGER.error(e.getMessage());
                 }
             }
         } catch (IOException e) {
@@ -80,7 +86,7 @@ public class CustomerAgreementTask {
         }
     }
 
-    private void launchJob(String filePath) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    private void launchJob(String filePath) throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
         LOGGER.info("Cron: launch {} batch job", providerImporterJob.getName());
         // The execution time is used to distinguish each instance of job execution
         Instant executionTime = Instant.now();
@@ -91,5 +97,6 @@ public class CustomerAgreementTask {
                         .addString("execution_time", executionTime.toString(), true)
                         .toJobParameters()
         );
+
     }
 }
