@@ -13,7 +13,7 @@ import org.springframework.web.client.RestClientException;
 
 @Service
 @Qualifier("customerAgreementBusinessServiceAdapter")
-@Profile("single")
+@Profile("standalone")
 public class StandaloneCustomerAgreementBusinessServiceAdapter implements BatchBusinessApiService<CustomerAgreement> {
 
     @Autowired
