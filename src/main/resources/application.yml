@@ -7,7 +7,7 @@ application:
     enabled: true
   task:
     customeragreement:
-      source: /tmp/CA
+      source: /import
       cron: "0 * * * * ?"
 
 logging:
@@ -44,18 +44,11 @@ customeragreement:
 
 ---
 
-profiles: remote
-
-server:
-  port: 8081
+spring:
+  profiles: multi-master
+  main:
+    web-application-type: none
 
 application:
   importService:
-    host: http://localhost:8081
-
----
-
-spring:
-  profiles: batch
-  main:
-    web-application-type: none
+    host: http://localhost:8080

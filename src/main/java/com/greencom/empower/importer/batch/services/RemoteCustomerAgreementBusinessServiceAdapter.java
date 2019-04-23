@@ -15,7 +15,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Profile("remote")
+@Profile("multi-master")
 public class RemoteCustomerAgreementBusinessServiceAdapter implements BatchBusinessApiService<CustomerAgreement> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteCustomerAgreementBusinessServiceAdapter.class);

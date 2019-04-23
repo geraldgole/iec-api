@@ -26,7 +26,7 @@ public class CustomerAgreementBusinessServiceAdapterTest {
     private CustomerAgreementService customerAgreementService;
 
     @InjectMocks
-    private CustomerAgreementBusinessServiceAdapter customerAgreementBusinessServiceAdapter;
+    private StandaloneCustomerAgreementBusinessServiceAdapter customerAgreementBusinessServiceAdapter;
 
     @Before
     public void setUp() throws Exception {

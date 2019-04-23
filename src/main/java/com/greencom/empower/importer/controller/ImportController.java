@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 
-@Profile("remote")
+@Profile("multi-worker")
 @RestController
 @RequestMapping("/import")
 public class ImportController {

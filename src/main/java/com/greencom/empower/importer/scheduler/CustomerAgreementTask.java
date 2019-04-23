@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Profile({"prod", "dev", "batch", "standalone"})
+@Profile({"prod", "dev", "multi-master", "single"})
 public class CustomerAgreementTask {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomerAgreementTask.class);
