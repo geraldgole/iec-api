@@ -82,20 +82,39 @@
                 <version>0.14.0</version>
                 <executions>
                     <execution>
+                        <id>customer-agreements</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <configuration>
+                            <schemaIncludes>
+                                <include>CustomerAgreements.xsd</include>
+                            </schemaIncludes>
+                            <generateDirectory>${project.build.directory}/generated-sources/xjc-customer-agreements</generateDirectory>
+                            <bindingIncludes>
+                                <include>CustomerAgreements.xjb</include>
+                            </bindingIncludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>meter-readings</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaIncludes>
+                                <include>meter_reading.xsd</include>
+                            </schemaIncludes>
+                            <generateDirectory>${project.build.directory}/generated-sources/xjc-meter-readings</generateDirectory>
+                            <bindingIncludes>
+                                <include>MeterReadings.xjb</include>
+                            </bindingIncludes>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
                     <schemaDirectory>src/main/resources/schemas</schemaDirectory>
-                    <schemaIncludes>
-                        <include>*.xsd</include>
-                    </schemaIncludes>
                     <bindingDirectory>src/main/resources/schemas</bindingDirectory>
-                    <bindingIncludes>
-                        <include>bindings.xjb</include>
-                    </bindingIncludes>
                 </configuration>
             </plugin>
         </plugins>
