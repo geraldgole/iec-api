@@ -9,6 +9,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
@@ -27,6 +28,9 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 public class ProvidersImporterJobConfiguration {
 
     private static final int RETRY_LIMIT = 3;
+    private static final String[] REQUIRED_JOB_PARAMETERS = {"file", "execution_time"};
+    private static final String[] OPTIONAL_JOB_PARAMETERS = {};
+
 
     @Value("classpath:schemas/CustomerAgreements.xsd")
     private Resource customerAgreementsSchema;
@@ -40,6 +44,7 @@ public class ProvidersImporterJobConfiguration {
     @Bean
     public Job providerImporterJob(Step customerAgreementProcessing) {
         return jobBuilderFactory.get("providers_importer")
+                .validator(new DefaultJobParametersValidator(REQUIRED_JOB_PARAMETERS, OPTIONAL_JOB_PARAMETERS))
                 .flow(customerAgreementProcessing)
                 .end()
                 .build();

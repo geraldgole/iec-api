@@ -7,10 +7,12 @@ import com.greencom.empower.importer.model.exception.CustomerAgreementException;
 import com.greencom.empower.importer.service.BusinessApiService;
 import com.greencom.empower.importer.service.CustomerAgreementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 @Service
+@Qualifier("customerAgreementBusinessServiceAdapter")
 public class CustomerAgreementBusinessServiceAdapter implements BatchBusinessApiService<CustomerAgreement> {
 
     protected BusinessApiService<CustomerAgreement> businessApiService;
