@@ -1,6 +1,6 @@
 package com.greencom.empower.importer.batch.writers;
 
-import com.greencom.empower.importer.batch.services.CustomerAgreementBusinessServiceAdapter;
+import com.greencom.empower.importer.batch.services.BatchBusinessApiService;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,8 @@ public class CustomerAgreementBatchItemWriter extends AbstractApiItemWriter<Cust
 
     private static final Logger log = LoggerFactory.getLogger(CustomerAgreementBatchItemWriter.class);
 
-    public CustomerAgreementBatchItemWriter(@Autowired CustomerAgreementBusinessServiceAdapter customerAgreementBusinessServiceAdapter) {
-        batchBusinessApiService = customerAgreementBusinessServiceAdapter;
-    }
+    @Autowired
+    private BatchBusinessApiService<CustomerAgreement> batchBusinessApiService;
 
     @Override
     public void write(List<? extends CustomerAgreement> list) throws Exception {

@@ -4,16 +4,15 @@ import com.greencom.empower.importer.model.Device;
 import com.greencom.empower.importer.model.Provider;
 import com.greencom.empower.importer.model.ProviderType;
 import com.greencom.empower.importer.model.exception.ApiException;
+import com.greencom.empower.importer.model.exception.ClientApiException;
+import com.greencom.empower.importer.model.exception.ServerApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -60,24 +59,26 @@ public class ApiService {
 
     private <T> T get(String url, Class<T> responseType, Object... urlVariables) throws ApiException, RestClientException {
 
-        ResponseEntity<T> response = restTemplate.getForEntity(url, responseType, urlVariables);
-        HttpStatus status = response.getStatusCode();
-        if (status.isError()) {
-            LOGGER.error("API error GET on {} : received {}({}) with body: {}", url, status.value(), status.getReasonPhrase(), response.getBody());
-            throw new ApiException(String.format("API error on GET %s", url), status);
+        try {
+            ResponseEntity<T> response = restTemplate.getForEntity(url, responseType, urlVariables);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new ClientApiException(String.format("Client error on GET %s : %s", url, e.getMessage()));
+        } catch (HttpServerErrorException | ResourceAccessException e) {
+            throw new ServerApiException(String.format("Server error on GET %s : %s", url, e.getMessage()));
         }
-        return response.getBody();
     }
 
     private <T> ResponseEntity<T> post(String url, Object object, Class<T> responseType, Object... urlVariables) throws ApiException, RestClientException {
 
-        ResponseEntity<T> response = restTemplate.postForEntity(url, object, responseType, urlVariables);
-        HttpStatus status = response.getStatusCode();
-        if (status.isError()) {
-            LOGGER.error("API error POST on {} : received {}({}) with body: {}", url, status.value(), status.getReasonPhrase(), response.getBody());
-            throw new ApiException(String.format("API error on GET %s", url), status);
+        try {
+            ResponseEntity<T> response = restTemplate.postForEntity(url, object, responseType, urlVariables);
+            return response;
+        } catch (HttpClientErrorException e) {
+            throw new ClientApiException(String.format("Client error on POST %s : %s", url, e.getMessage()));
+        } catch (HttpServerErrorException | ResourceAccessException e) {
+            throw new ServerApiException(String.format("Server error on POST %s : %s", url, e.getMessage()));
         }
-        return response;
     }
 
     private void put(String url, Object object) {

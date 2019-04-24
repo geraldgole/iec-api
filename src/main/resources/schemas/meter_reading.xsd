@@ -6,32 +6,32 @@
     <xs:complexType name="MeterReadings">
         <xs:sequence>
             <xs:element name="MeterReading" type="MeterReading" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="ReadingTypes" type="ReadingTypes" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ReadingTypes" type="ReadingTypes" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="MeterReading">
         <xs:sequence>
-            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="IntervalBlocks" type="IntervalBlocks" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Readings" type="Readings" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Meter" type="Meter" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="UsagePoint" type="UsagePoint" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="IntervalBlocks" type="IntervalBlocks" minOccurs="0"/>
+            <xs:element name="Readings" type="Readings" minOccurs="0"/>
+            <xs:element name="Meter" type="Meter"/>
+            <xs:element name="UsagePoint" type="UsagePoint"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="IntervalBlocks">
         <xs:sequence>
             <xs:element name="IntervalBlock" type="IntervalBlock" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="IntervalReadings" type="IntervalReadings" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="IntervalReadings" type="IntervalReadings" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="IntervalBlock">
         <xs:sequence>
-            <xs:element name="IntervalReadings" type="IntervalReadings" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ReadingType" type="ReadingTypeRef" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="IntervalReadings" type="IntervalReadings" minOccurs="0"/>
+            <xs:element name="ReadingType" type="ReadingTypeRef"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -43,11 +43,11 @@
 
     <xs:complexType name="IntervalReading">
         <xs:sequence>
-            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="timeStamp" minOccurs="1" maxOccurs="1" type="xs:dateTime"/>
-            <xs:element name="value" minOccurs="1" maxOccurs="1" type="xs:float"/>
-            <xs:element name="ReadingQualities" type="ReadingQualities" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="timeStamp" type="xs:dateTime"/>
+            <xs:element name="value" type="xs:float"/>
+            <xs:element name="ReadingQualities" type="ReadingQualities" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -59,11 +59,11 @@
 
     <xs:complexType name="ReadingQuality">
         <xs:sequence>
-            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="systemId" minOccurs="1" maxOccurs="1" type="xs:integer"/>
-            <xs:element name="category" minOccurs="1" maxOccurs="1" type="xs:integer"/>
-            <xs:element name="subCategory" minOccurs="1" maxOccurs="1" type="xs:integer"/>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="systemId" type="xs:integer"/>
+            <xs:element name="category" type="xs:integer"/>
+            <xs:element name="subCategory" type="xs:integer"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -75,36 +75,36 @@
 
     <xs:complexType name="Reading">
         <xs:sequence>
-            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="timeStamp" minOccurs="1" maxOccurs="1" type="xs:dateTime"/>
-            <xs:element name="value" minOccurs="1" maxOccurs="1" type="xs:float"/>
-            <xs:element name="ReadingQualities" type="ReadingQualities" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ReadingType" type="ReadingTypeRef" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="timeStamp" type="xs:dateTime"/>
+            <xs:element name="value" type="xs:float"/>
+            <xs:element name="ReadingQualities" type="ReadingQualities" minOccurs="0"/>
+            <xs:element name="ReadingType" type="ReadingTypeRef"/>
         </xs:sequence>
     </xs:complexType>
 
 
     <xs:complexType name="Meter">
         <xs:sequence>
-            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="status" minOccurs="0" maxOccurs="1" type="Status"/>
-            <xs:element name="serialNumber" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="status" minOccurs="0" type="Status"/>
+            <xs:element name="serialNumber" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="UsagePoint">
         <xs:sequence>
-            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="mRID" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="Status">
         <xs:sequence>
-            <xs:element name="dateTime" minOccurs="0" maxOccurs="1" type="xs:dateTime"/>
-            <xs:element name="reason" minOccurs="0" maxOccurs="1" type="xs:string"/>
-            <xs:element name="value" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="dateTime" minOccurs="0" type="xs:dateTime"/>
+            <xs:element name="reason" minOccurs="0" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -120,13 +120,13 @@
 
     <xs:complexType name="ReadingType">
         <xs:sequence>
-            <xs:element name="mRID" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="flowDirection" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="measurementKind" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="kind" minOccurs="1" maxOccurs="1" type="kind"/>
-            <xs:element name="multiplier" minOccurs="1" maxOccurs="1" type="multiplier"/>
-            <xs:element name="unit" minOccurs="1" maxOccurs="1" type="unit"/>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="flowDirection" type="xs:string"/>
+            <xs:element name="measurementKind" type="xs:string"/>
+            <xs:element name="kind" type="kind"/>
+            <xs:element name="multiplier" type="multiplier"/>
+            <xs:element name="unit" type="unit"/>
         </xs:sequence>
     </xs:complexType>
 
