@@ -5,7 +5,6 @@ import com.greencom.empower.importer.model.Provider;
 import com.greencom.empower.importer.model.ProviderType;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import com.greencom.empower.importer.model.customeragreement.UsagePoint;
-import com.greencom.empower.importer.model.customeragreement.UsagePoints;
 import com.greencom.empower.importer.model.exception.CustomerAgreementException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,7 +41,7 @@ public class CustomerAgreementService implements BusinessApiService<CustomerAgre
 
     private void createCustomerAgreement(CustomerAgreement customerAgreement) {
 
-        UsagePoints ups = customerAgreement.getUsagePoints();
+        CustomerAgreement.UsagePoints ups = customerAgreement.getUsagePoints();
         if (ups != null) {
             for (UsagePoint up : ups.getUsagePoint()) {
                 List<Device> devices = apiService.getDevices(Collections.singletonMap("usagePoint.id", up.getMRID()));
@@ -66,7 +65,6 @@ public class CustomerAgreementService implements BusinessApiService<CustomerAgre
     private void processExistingCustomerAgreement(CustomerAgreement customerAgreement, List<Provider> providers) {
 
         // Providers should contain ONLY ONE provider according to O. Brie
-
         // Check if CA is assigned to a different customer
         if (providers.stream().anyMatch(provider ->
                 !StringUtils.equals(provider.getProperty("customer.id"), customerAgreement.getCustomer().getMRID()))) {

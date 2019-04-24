@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.retry.backoff.BackOffPolicy;
@@ -31,8 +32,8 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 @EnableBatchProcessing
 public class ProvidersImporterJobConfiguration {
 
-    private final String[] REQUIRED_JOB_PARAMETERS = {"file", "execution_time"};
-    private final String[] OPTIONAL_JOB_PARAMETERS = {};
+    private static final String[] REQUIRED_JOB_PARAMETERS = {"file", "execution_time"};
+    private static final String[] OPTIONAL_JOB_PARAMETERS = {};
 
     private final long INITIAL_BACK_OFF_INTERVAL = 10000;
     private final long MAX_BACK_OFF_INTERVAL = 50000;
@@ -40,6 +41,9 @@ public class ProvidersImporterJobConfiguration {
     private final int RETRY_LIMIT = 3;
     // TODO : Define a skip limit for a batch's chunck or override the default SkipPolicy for unrestrained skipping.
     private final int SKIP_LIMIT = 100;
+
+    @Value("classpath:schemas/CustomerAgreements.xsd")
+    private Resource customerAgreementsSchema;
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
@@ -93,6 +97,7 @@ public class ProvidersImporterJobConfiguration {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
         jaxb2Marshaller.setMappedClass(CustomerAgreement.class);
         jaxb2Marshaller.setClassesToBeBound(CustomerAgreement.class);
+        jaxb2Marshaller.setSchema(this.customerAgreementsSchema);
         return jaxb2Marshaller;
     }
 

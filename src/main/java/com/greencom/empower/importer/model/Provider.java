@@ -3,7 +3,6 @@ package com.greencom.empower.importer.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import com.greencom.empower.importer.model.customeragreement.UsagePoint;
-import com.greencom.empower.importer.model.customeragreement.UsagePoints;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +30,6 @@ public class Provider extends AbstractEntity {
 
         addProperty("mrid", customerAgreement.getMRID());
         addProperty("name", customerAgreement.getName());
-        addProperty("aliasName", customerAgreement.getAliasName());
         addProperty("title", customerAgreement.getTitle());
         addProperty("subject", customerAgreement.getSubject());
 
@@ -52,7 +50,7 @@ public class Provider extends AbstractEntity {
 
         addProperty("customerAccount.id", customerAgreement.getCustomerAccount().getMRID());
 
-        UsagePoints usagePoints = customerAgreement.getUsagePoints();
+        CustomerAgreement.UsagePoints usagePoints = customerAgreement.getUsagePoints();
         if (usagePoints != null) {
             for (UsagePoint usagePoint : usagePoints.getUsagePoint()) {
                 Device device = new Device();

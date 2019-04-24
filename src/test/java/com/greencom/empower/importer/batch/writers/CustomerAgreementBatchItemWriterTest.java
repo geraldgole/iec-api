@@ -2,7 +2,7 @@ package com.greencom.empower.importer.batch.writers;
 
 import com.greencom.empower.importer.batch.exceptions.BatchFatalException;
 import com.greencom.empower.importer.batch.exceptions.BatchRecoverableException;
-import com.greencom.empower.importer.batch.services.CustomerAgreementBusinessServiceAdapter;
+import com.greencom.empower.importer.batch.services.StandaloneCustomerAgreementBusinessServiceAdapter;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class CustomerAgreementBatchItemWriterTest {
 
     @Mock
-    private CustomerAgreementBusinessServiceAdapter customerAgreementBusinessServiceAdapter;
+    private StandaloneCustomerAgreementBusinessServiceAdapter customerAgreementBusinessServiceAdapter;
 
     @InjectMocks
     private CustomerAgreementBatchItemWriter customerAgreementBatchItemWriter;
@@ -45,7 +45,7 @@ public class CustomerAgreementBatchItemWriterTest {
     public void should_process_list_size_number_of_items() throws Exception {
 
         List<CustomerAgreement> customerAgreementsListOf100Items = new ArrayList<>();
-        while(customerAgreementsListOf100Items.size() < 100) {
+        while (customerAgreementsListOf100Items.size() < 100) {
             customerAgreementsListOf100Items.add(customerAgreementMock);
         }
 

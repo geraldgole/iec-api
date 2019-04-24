@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="CustomerAgreements" type="CustomerAgreements"/>
+    <xs:element name="CustomerAgreement" type="CustomerAgreement"/>
+    <xs:complexType name="CustomerAgreements">
+        <xs:sequence>
+            <xs:element name="CustomerAgreement" type="CustomerAgreement" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CustomerAgreement">
+        <xs:sequence>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="status" type="Status" minOccurs="0"/>
+            <xs:element name="docStatus" type="Status" minOccurs="0"/>
+            <xs:element name="title" type="xs:string" minOccurs="0"/>
+            <xs:element name="subject" type="xs:string" minOccurs="0"/>
+            <xs:element name="revisionNumber" type="xs:string" minOccurs="0"/>
+            <xs:element name="lastModifiedDateTime" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="createdDateTime" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="type" type="xs:string" minOccurs="0"/>
+            <xs:element name="validityInterval" type="DateTimeInterval" minOccurs="0"/>
+            <xs:element name="signDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="loadMgmt" type="xs:string" minOccurs="0"/>
+            <xs:element name="ServiceCategory" type="ServiceCategory" minOccurs="0"/>
+            <xs:element name="UsagePoints" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="UsagePoint" type="UsagePoint" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ServiceSupplier" type="ServiceSupplier"/>
+            <xs:element name="Customer" type="Customer"/>
+            <xs:element name="CustomerAccount" type="CustomerAccount"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="UsagePoint">
+        <xs:sequence>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Customer">
+        <xs:sequence>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="status" type="Status" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CustomerAccount">
+        <xs:sequence>
+            <xs:element name="mRID" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DateTimeInterval">
+        <xs:sequence>
+            <xs:element name="end" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="start" type="xs:dateTime" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ServiceCategory">
+        <xs:sequence>
+            <xs:element name="mRID" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="kind" type="ServiceKind" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ServiceSupplier">
+        <xs:sequence>
+            <xs:element name="mRID" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="ServiceKind">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="electricity"/>
+            <xs:enumeration value="gas"/>
+            <xs:enumeration value="heat"/>
+            <xs:enumeration value="internet"/>
+            <xs:enumeration value="other"/>
+            <xs:enumeration value="rates"/>
+            <xs:enumeration value="refuse"/>
+            <xs:enumeration value="sewerage"/>
+            <xs:enumeration value="time"/>
+            <xs:enumeration value="tvLicence"/>
+            <xs:enumeration value="water"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="Status">
+        <xs:sequence>
+            <xs:element name="dateTime" type="xs:dateTime"/>
+            <xs:element name="reason" type="xs:string" minOccurs="0"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

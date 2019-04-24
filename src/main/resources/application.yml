@@ -7,7 +7,7 @@ application:
     enabled: true
   task:
     customeragreement:
-      source: /tmp/CA
+      source: /import
       cron: "0 * * * * ?"
 
 logging:
@@ -22,6 +22,7 @@ spring.batch.job.enabled: false
 spring:
   profiles:
     active: prod
+
 ---
 
 spring:
@@ -37,5 +38,17 @@ spring:
 
 spring:
   profiles: test
-  customeragreement:
-    source: /test/resources/inputs/customer_agreements
+
+customeragreement:
+  source: /test/resources/inputs/customer_agreements
+
+---
+
+spring:
+  profiles: multi-master
+  main:
+    web-application-type: none
+
+application:
+  importService:
+    host: http://localhost:8080
