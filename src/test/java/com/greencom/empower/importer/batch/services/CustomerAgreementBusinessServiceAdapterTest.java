@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClientException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,18 +30,26 @@ public class CustomerAgreementBusinessServiceAdapterTest {
     private StandaloneCustomerAgreementBusinessServiceAdapter customerAgreementBusinessServiceAdapter;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test(expected = BatchFatalException.class)
-    public void should_translate_exceptions_into_batch_fatal_exception() throws BatchFatalException, BatchRecoverableException {
+    public void should_translate_exceptions_into_batch_fatal_exception()
+            throws BatchRecoverableException,
+            BatchFatalException,
+            CustomerAgreementException {
+
         doThrow(CustomerAgreementException.class).when(customerAgreementService).process((any(CustomerAgreement.class)));
         customerAgreementBusinessServiceAdapter.processItem(new CustomerAgreement());
     }
 
     @Test(expected = BatchRecoverableException.class)
-    public void should_translate_exceptions_into_batch_recoverable_exception() throws BatchFatalException, BatchRecoverableException {
+    public void should_translate_exceptions_into_batch_recoverable_exception()
+            throws BatchRecoverableException,
+            BatchFatalException,
+            CustomerAgreementException {
+
         doThrow(RestClientException.class).when(customerAgreementService).process((any(CustomerAgreement.class)));
         customerAgreementBusinessServiceAdapter.processItem(new CustomerAgreement());
     }

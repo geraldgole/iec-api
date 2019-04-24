@@ -10,7 +10,7 @@ public enum ProviderType {
 
     private String type;
 
-    private ProviderType(String type) {
+    ProviderType(String type) {
         this.type = type;
     }
 }

@@ -35,12 +35,13 @@ public class ProvidersImporterJobConfiguration {
     private static final String[] REQUIRED_JOB_PARAMETERS = {"file", "execution_time"};
     private static final String[] OPTIONAL_JOB_PARAMETERS = {};
 
-    private final long INITIAL_BACK_OFF_INTERVAL = 10000;
-    private final long MAX_BACK_OFF_INTERVAL = 50000;
+    private static final long INITIAL_BACK_OFF_INTERVAL = 10000;
+    private static final long MAX_BACK_OFF_INTERVAL = 50000;
 
-    private final int RETRY_LIMIT = 3;
+    private static final int RETRY_LIMIT = 3;
     // TODO : Define a skip limit for a batch's chunck or override the default SkipPolicy for unrestrained skipping.
-    private final int SKIP_LIMIT = 100;
+    private static final int SKIP_LIMIT = 100;
+
 
     @Value("classpath:schemas/CustomerAgreements.xsd")
     private Resource customerAgreementsSchema;
