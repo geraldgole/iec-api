@@ -27,19 +27,18 @@ public class CustomerAgreementService implements BusinessApiService<CustomerAgre
 
 
     @Override
-    public void process(CustomerAgreement customerAgreement) {
+    public void process(CustomerAgreement customerAgreement) throws CustomerAgreementException {
 
         List<Provider> providers = apiService.getProviders(ProviderType.CUSTOMER_AGREEMENT, Collections.singletonMap("mrid", customerAgreement.getMRID()));
         if (providers.size() == 0) {
             LOGGER.debug("Customer agreement {} does not exists", customerAgreement.getMRID());
             createCustomerAgreement(customerAgreement);
-
         } else {
             processExistingCustomerAgreement(customerAgreement, providers);
         }
     }
 
-    private void createCustomerAgreement(CustomerAgreement customerAgreement) {
+    private void createCustomerAgreement(CustomerAgreement customerAgreement) throws CustomerAgreementException {
 
         CustomerAgreement.UsagePoints ups = customerAgreement.getUsagePoints();
         if (ups != null) {
@@ -62,7 +61,9 @@ public class CustomerAgreementService implements BusinessApiService<CustomerAgre
     }
 
 
-    private void processExistingCustomerAgreement(CustomerAgreement customerAgreement, List<Provider> providers) {
+    private void processExistingCustomerAgreement(CustomerAgreement customerAgreement,
+                                                  List<Provider> providers)
+            throws CustomerAgreementException {
 
         // Providers should contain ONLY ONE provider according to O. Brie
         // Check if CA is assigned to a different customer
