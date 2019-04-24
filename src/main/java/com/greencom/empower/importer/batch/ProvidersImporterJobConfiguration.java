@@ -1,6 +1,8 @@
 package com.greencom.empower.importer.batch;
 
 import com.greencom.empower.importer.batch.exceptions.BatchRecoverableException;
+import com.greencom.empower.importer.batch.listeners.RetryLoggerListener;
+import com.greencom.empower.importer.batch.listeners.SkipLoggerListener;
 import com.greencom.empower.importer.batch.processors.CustomerAgreementToProviderProcessor;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import org.springframework.batch.core.Job;
@@ -21,6 +23,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.retry.backoff.BackOffPolicy;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
 
 @Configuration
 @EnableBatchProcessing
@@ -29,7 +34,12 @@ public class ProvidersImporterJobConfiguration {
     private final String[] REQUIRED_JOB_PARAMETERS = {"file", "execution_time"};
     private final String[] OPTIONAL_JOB_PARAMETERS = {};
 
+    private final long INITIAL_BACK_OFF_INTERVAL = 10000;
+    private final long MAX_BACK_OFF_INTERVAL = 50000;
+
     private final int RETRY_LIMIT = 3;
+    // TODO : Define a skip limit for a batch's chunck or override the default SkipPolicy for unrestrained skipping.
+    private final int SKIP_LIMIT = 100;
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
@@ -56,7 +66,13 @@ public class ProvidersImporterJobConfiguration {
                 .faultTolerant()
                 .noRollback(BatchRecoverableException.class)
                 .retry(BatchRecoverableException.class)
+                .retryPolicy(new SimpleRetryPolicy())
                 .retryLimit(this.RETRY_LIMIT)
+                .backOffPolicy(backOffPolicy())
+                .skip(BatchRecoverableException.class)
+                .skipLimit(SKIP_LIMIT)
+                .listener(new RetryLoggerListener())
+                .listener(new SkipLoggerListener())
                 .build();
     }
 
@@ -84,5 +100,13 @@ public class ProvidersImporterJobConfiguration {
     @Bean
     public CustomerAgreementToProviderProcessor customerAgreementToProviderProcessor() {
         return new CustomerAgreementToProviderProcessor();
+    }
+
+    @Bean
+    public BackOffPolicy backOffPolicy() {
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(INITIAL_BACK_OFF_INTERVAL);
+        backOffPolicy.setMaxInterval(MAX_BACK_OFF_INTERVAL);
+        return backOffPolicy;
     }
 }
