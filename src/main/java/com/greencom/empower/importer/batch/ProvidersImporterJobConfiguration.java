@@ -4,6 +4,7 @@ import com.greencom.empower.importer.batch.exceptions.BatchRecoverableException;
 import com.greencom.empower.importer.batch.listeners.RetryLoggerListener;
 import com.greencom.empower.importer.batch.listeners.SkipLoggerListener;
 import com.greencom.empower.importer.batch.processors.CustomerAgreementToProviderProcessor;
+import com.greencom.empower.importer.batch.writers.CustomerAgreementBatchItemWriter;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -91,6 +92,12 @@ public class ProvidersImporterJobConfiguration {
                 .unmarshaller(customerAgreementUnmarshaller())
                 .strict(true)
                 .build();
+    }
+
+    @Bean
+    @StepScope
+    public CustomerAgreementBatchItemWriter customerAgreementItemWriter() {
+        return new CustomerAgreementBatchItemWriter();
     }
 
     @Bean
