@@ -1,4 +1,4 @@
-package com.greencom.empower.importer.batch;
+package com.greencom.empower.importer.batch.jobs;
 
 import com.greencom.empower.importer.batch.exceptions.BatchRecoverableException;
 import com.greencom.empower.importer.batch.listeners.RetryLoggerListener;
@@ -7,6 +7,7 @@ import com.greencom.empower.importer.batch.processors.CustomerAgreementToProvide
 import com.greencom.empower.importer.batch.writers.CustomerAgreementBatchItemWriter;
 import com.greencom.empower.importer.model.customeragreement.CustomerAgreement;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -33,17 +34,6 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 @EnableBatchProcessing
 public class ProvidersImporterJobConfiguration {
 
-    private static final String[] REQUIRED_JOB_PARAMETERS = {"file", "execution_time"};
-    private static final String[] OPTIONAL_JOB_PARAMETERS = {};
-
-    private static final long INITIAL_BACK_OFF_INTERVAL = 10000;
-    private static final long MAX_BACK_OFF_INTERVAL = 50000;
-
-    private static final int RETRY_LIMIT = 3;
-    // TODO : Define a skip limit for a batch's chunck or override the default SkipPolicy for unrestrained skipping.
-    private static final int SKIP_LIMIT = 100;
-
-
     @Value("classpath:schemas/CustomerAgreements.xsd")
     private Resource customerAgreementsSchema;
 
@@ -56,7 +46,7 @@ public class ProvidersImporterJobConfiguration {
     @Bean
     public Job providerImporterJob(Step customerAgreementProcessing) {
         return jobBuilderFactory.get("providers_importer")
-                .validator(new DefaultJobParametersValidator(REQUIRED_JOB_PARAMETERS, OPTIONAL_JOB_PARAMETERS))
+                .validator(providerJobStartupParametersValidator())
                 .flow(customerAgreementProcessing)
                 .end()
                 .build();
@@ -73,10 +63,10 @@ public class ProvidersImporterJobConfiguration {
                 .noRollback(BatchRecoverableException.class)
                 .retry(BatchRecoverableException.class)
                 .retryPolicy(new SimpleRetryPolicy())
-                .retryLimit(this.RETRY_LIMIT)
-                .backOffPolicy(backOffPolicy())
+                .retryLimit(JobsConfigurationConst.PROVIDER_IMPORTER_RETRY_LIMIT)
+                .backOffPolicy(providerBackOffPolicy())
                 .skip(BatchRecoverableException.class)
-                .skipLimit(SKIP_LIMIT)
+                .skipLimit(JobsConfigurationConst.PROVIDER_IMPORTER_SKIP_LIMIT)
                 .listener(new RetryLoggerListener())
                 .listener(new SkipLoggerListener())
                 .build();
@@ -116,10 +106,18 @@ public class ProvidersImporterJobConfiguration {
     }
 
     @Bean
-    public BackOffPolicy backOffPolicy() {
+    public BackOffPolicy providerBackOffPolicy() {
         ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
-        backOffPolicy.setInitialInterval(INITIAL_BACK_OFF_INTERVAL);
-        backOffPolicy.setMaxInterval(MAX_BACK_OFF_INTERVAL);
+        backOffPolicy.setInitialInterval(JobsConfigurationConst.PROVIDER_IMPORTER_INITIAL_BACK_OFF_INTERVAL);
+        backOffPolicy.setMaxInterval(JobsConfigurationConst.PROVIDER_IMPORTER_MAX_BACK_OFF_INTERVAL);
         return backOffPolicy;
+    }
+
+    @Bean
+    public JobParametersValidator providerJobStartupParametersValidator() {
+        return new DefaultJobParametersValidator(
+                JobsConfigurationConst.PROVIDER_IMPORTER_REQUIRED_JOB_PARAMETERS,
+                JobsConfigurationConst.PROVIDER_IMPORTER_OPTIONAL_JOB_PARAMETERS
+        );
     }
 }
