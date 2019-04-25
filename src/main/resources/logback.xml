@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="consoleOut" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder
+            by default -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5p) [%t] %c{1.} - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="kafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5p) [%t] %c{1.} - %m%n</pattern>
+        </encoder>
+        <!-- TODO: adapt to GCN environment-->
+        <topic>logs</topic>
+        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy"/>
+        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy"/>
+
+        <!-- Optional parameter to use a fixed partition -->
+        <!-- <partition>0</partition> -->
+
+        <!-- Optional parameter to include log timestamps into the kafka message -->
+        <!-- <appendTimestamp>true</appendTimestamp> -->
+
+        <!-- each <producerConfig> translates to regular kafka-client config (format: key=value) -->
+        <!-- producer configs are documented here: https://kafka.apache.org/documentation.html#newproducerconfigs -->
+        <!-- bootstrap.servers is the only mandatory producerConfig -->
+        <producerConfig>bootstrap.servers=localhost:9092</producerConfig>
+
+        <!-- this is the fallback appender if kafka is not available. -->
+        <appender-ref ref="consoleOut"/>
+    </appender>
+
+    <logger name="com.greencom.empower" level="DEBUG"/>
+    <root level="INFO">
+        <appender-ref ref="consoleOut"/>
+    </root>
+
+</configuration>
