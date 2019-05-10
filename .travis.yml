@@ -6,22 +6,19 @@ jdk:
 services:
   - docker
 
+script:
+  - mvn clean package
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 
 deploy:
+  # deploy develop to the staging environment
   - provider: script
-    script:
-      - mvn clean package
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker build -f docker/Dockerfile -t spireet/gerald:importer .
-      - docker push spireet/gerald:importer
-    on:
-      branch: master
-
-  - provider: script
-    script:
-      - mvn clean package
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker build -f docker/Dockerfile -t spireet/gerald:importer-integ .
-      - docker push spireet/gerald:importer-integ
+    script: docker build -f docker/Dockerfile -t spireet/gerald:importer-integ . && docker push spireet/gerald:importer-integ
     on:
       branch: develop
+  # deploy master to production
+  - provider: script
+    script: docker build -f docker/Dockerfile -t spireet/gerald:importer . && docker push spireet/gerald:importer
+    on:
+      branch: master
